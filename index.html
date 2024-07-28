@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A beautiful flower-themed webpage with smooth scrolling and interactive effects."
+    />
+    <title>Advencher</title>
+    <style>
+      /* General Reset and Body Styling */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans Display", sans-serif;
+        background-color: #c45147;
+        color: white;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* Hide scrollbar on larger screens */
+      @media (min-width: 1200px) {
+        html {
+          overflow-y: hidden;
+        }
+        body::-webkit-scrollbar {
+          display: none;
+        }
+        body {
+          scrollbar-width: none;
+        }
+      }
+
+      /* Main Section Styling */
+      main {
+        display: flex;
+        flex-direction: column;
+        scroll-snap-type: y mandatory;
+      }
+
+      /* Individual Section Styling */
+      .section {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scroll-snap-align: start;
+        position: relative;
+        box-sizing: border-box;
+        transition: background-color 1s ease;
+        padding: 1.5rem;
+        text-align: center;
+      }
+
+      /* Background Color Animations */
+      #section1 {
+        background-color: #f5a9a3; /* Light coral */
+      }
+      #section1.active {
+        background-color: #c45147; /* Original color */
+      }
+
+      #section2 {
+        background-color: #a29bfe; /* Light purple */
+      }
+      #section2.active {
+        background-color: #6b5b95; /* Original color */
+      }
+
+      #section3 {
+        background-color: #b4e197; /* Light green */
+      }
+      #section3.active {
+        background-color: #88b04b; /* Original color */
+      }
+
+      /* Center Container Styling */
+      .center-container {
+        text-align: center;
+      }
+
+      /* Flower Picture Styling */
+      .flower-image {
+        width: 100%;
+        max-width: 150px;
+        height: 150px;
+        border: 2px solid white;
+        border-radius: 8px;
+        margin: 1rem auto;
+        display: block;
+        position: relative;
+        overflow: hidden;
+        animation: scale 5s ease-in-out infinite;
+        background-color: #efedf38c;
+      }
+
+      .flower-image::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(15px);
+        z-index: -1;
+        border-radius: 8px;
+      }
+
+      @keyframes scale {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      /* Header Animation */
+      h1 {
+        margin: 0;
+        color: white;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        animation: fade 3s ease-in-out infinite;
+        transition: color 0.5s ease-in-out;
+      }
+
+      @keyframes fade {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Navigation Bar Styling */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      nav li {
+        margin: 0 1rem;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      nav a.active {
+        color: #fff; /* Gold color */
+        text-shadow: 0 0 5px #fff;
+        border-bottom: 2px solid #fff; /* Highlight active nav link with underline */
+      }
+
+      /* Bullet Points */
+      .bullets {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        z-index: 10;
+      }
+
+      .bullets li {
+        margin: 10px 0;
+      }
+
+      .bullets a {
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid white;
+        border-radius: 50%;
+        transition: background 0.3s ease;
+      }
+
+      .bullets a.active {
+        background: white;
+      }
+
+      /* Footer */
+      footer {
+        background: black;
+        color: white;
+        text-align: center;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        animation: slideUp 2s infinite alternate;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      @keyframes slideUp {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Flower Animations */
+      @keyframes fall {
+        0% {
+          transform: translate(0, -100vh) rotate(0deg);
+          opacity: 0;
+        }
+        1% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(10vw, 100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .flower {
+        position: absolute;
+        font-size: 2rem;
+        opacity: 0; /* Start with opacity 0 */
+        pointer-events: none;
+        animation: fall 10s linear infinite;
+        color: inherit;
+      }
+
+      .flower:nth-child(odd) {
+        animation-direction: reverse;
+      }
+
+      .flower-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="#section1">Section1</a></li>
+        <li><a href="#section2">Section2</a></li>
+        <li><a href="#section3">Section 3</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section id="section1" class="section active">
+        <div class="center-container">
+          <h1>Header</h1>
+          <img src="flower1.png" alt="Flower 1" class="flower-image" />
+          <p>Paragraph</p>
+        </div>
+        <div class="flower-container">
+          <div class="flower">🌸</div>
+          <div class="flower">🌷</div>
+          <div class="flower">🌺</div>
+          <div class="flower">🌼</div>
+          <div class="flower">🌻</div>
+          <div class="flower">🌹</div>
+          <div class="flower">🌸</div>
+          <div class="flower">🌷</div>
+          <div class="flower">🌺</div>
+          <div class="flower">🌼</div>
+        </div>
+      </section>
+      <section id="section2" class="section">
+        <div class="center-container">
+          <h1>Header</h1>
+          <img src="flower2.png" alt="Flower 2" class="flower-image" />
+          <p>Paragraph</p>
+        </div>
+        <div class="flower-container">
+          <div class="flower">🌺</div>
+          <div class="flower">🌼</div>
+          <div class="flower">🌻</div>
+          <div class="flower">🌹</div>
+          <div class="flower">🌸</div>
+          <div class="flower">🌷</div>
+          <div class="flower">🌺</div>
+          <div class="flower">🌼</div>
+          <div class="flower">🌻</div>
+          <div class="flower">🌹</div>
+        </div>
+      </section>
+      <section id="section3" class="section">
+        <div class="center-container">
+          <h1>Header</h1>
+          <img src="flower3.png" alt="Flower 3" class="flower-image" />
+          <p>Paragraph</p>
+        </div>
+        <div class="flower-container">
+          <div class="flower">🌺</div>
+          <div class="flower">🌼</div>
+          <div class="flower">🌻</div>
+          <div class="flower">🌹</div>
+          <div class="flower">🌸</div>
+          <div class="flower">🌷</div>
+          <div class="flower">🌺</div>
+          <div class="flower">🌼</div>
+          <div class="flower">🌻</div>
+          <div class="flower">🌹</div>
+        </div>
+      </section>
+    </main>
+
+    <ul class="bullets">
+      <li><a href="#section1"></a></li>
+      <li><a href="#section2"></a></li>
+      <li><a href="#section3"></a></li>
+    </ul>
+
+    <footer>&copy; 2024 Advencher</footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll(".section");
+        const navLinks = document.querySelectorAll("nav a");
+        const bullets = document.querySelectorAll(".bullets a");
+        const flowers = document.querySelectorAll(".flower");
+
+        function setActive() {
+          let index = sections.length;
+
+          while (--index && window.scrollY + 50 < sections[index].offsetTop) {}
+
+          navLinks.forEach((link) => link.classList.remove("active"));
+          navLinks[index].classList.add("active");
+
+          bullets.forEach((bullet) => bullet.classList.remove("active"));
+          bullets[index].classList.add("active");
+
+          sections.forEach((section) => section.classList.remove("active"));
+          sections[index].classList.add("active");
+        }
+
+        function setRandomPositions() {
+          flowers.forEach((flower) => {
+            const randomX = Math.random() * 100;
+            const randomDelay = Math.random() * 10;
+            flower.style.left = `${randomX}%`;
+            flower.style.animationDelay = `${randomDelay}s`;
+          });
+        }
+
+        setActive();
+        setRandomPositions();
+        window.addEventListener("scroll", setActive);
+
+        // Smooth scroll for navigation links
+        navLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.querySelector(link.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+
+        // Smooth scroll for bullet points
+        bullets.forEach((bullet) => {
+          bullet.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.querySelector(bullet.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
